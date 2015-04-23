@@ -1,4 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'sonar-runner'
 
 buildscript {
     repositories {
@@ -7,8 +8,9 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.0'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+//        // NOTE: Do not place your application dependencies here; they belong
+//        // in the individual module build.gradle files
+//        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4+'
     }
 }
 
@@ -17,3 +19,60 @@ allprojects {
         jcenter()
     }
 }
+
+sonarRunner {
+    toolVersion = '2.4'
+
+    sonarProperties {
+        property "sonar.projectName", "Android-SonarQube-MultiProject"
+        property "sonar.projectKey", "key-Android-SonarQube-MultiProject"
+        property "sonar.host.url", "http://localhost:9000/"
+        property "sonar.jdbc.url", "jdbc:mysql://localhost:3306/sonar?useUnicode=true&amp;characterEncoding=utf8"
+        property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+        property "sonar.jdbc.username", "sonar"
+        property "sonar.jdbc.password", "sonar"
+        property "sonar.language", "java"
+//        property "sonar.sources", "src/main/java"
+//        properties["sonar.sources"] = android.sourceSets.main.java.srcDirs
+//        properties["sonar.tests"] = android.sourceSets.instrumentTest.java.srcDirs
+//        properties["sonar.binaries"] = file("build/classes/debug")
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectVersion", "1.0.0"
+//        property "sonar.projectBaseDir", "/Users/wiki/workspace/gradle/Android-SonarQube-MultiProject"
+
+//        property "sonar.binaries", "build/intermediates/classes/debug"
+        property "sonar.binaries", "build"
+        property "sonar.profile", "Android Lint"
+
+    }
+}
+
+subprojects {
+    sonarRunner {
+        sonarProperties {
+//            properties["sonar.sources"] += "src/main/java"
+//            properties["sonar.sources"] += sourceSets.main.allSource.srcDirs
+//            property "sonar.sources", "src/main/java"
+
+            properties["sonar.sources"] = android.sourceSets.main.java.srcDirs
+//            properties["sonar.tests"] = android.sourceSets.instrumentTest.java.srcDirs
+            properties["sonar.binaries"] = file("build/classes/debug")
+
+            property "sonar.language", "java"
+
+            property "sonar.binaries", "build"
+            property "sonar.profile", "Android Lint"
+            property "sonar.sourceEncoding", "UTF-8"
+//            property "sonar.projectBaseDir", "/Users/wiki/workspace/gradle/Android-SonarQube-MultiProject"
+        }
+    }
+}
+
+//// START SNIPPET source-sets
+//sonarRunner {
+//    sonarProperties {
+//        properties["sonar.sources"] += sourceSets.custom.allSource.srcDirs
+//        properties["sonar.tests"] += sourceSets.integTest.allSource.srcDirs
+//    }
+//}
+//// END SNIPPET source-sets
